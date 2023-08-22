@@ -14,8 +14,8 @@ provider "azurerm" {
 
 # Create a resource group
 resource "azurerm_resource_group" "homelabrg" {
-  name     = "homelab"
-  location = "East US"
+  name     = var.rgname
+  location = var.rglocation
 }
 
 # create security group
@@ -39,7 +39,7 @@ resource "azurerm_network_security_group" "homelabsg" {
 
 # network security group
 resource "azurerm_virtual_network" "homelabvnet" {
-  name                = "homelab-net"
+  name                = var.vnname
   location            = azurerm_resource_group.homelabrg.location
   resource_group_name = azurerm_resource_group.homelabrg.name
   address_space       = ["10.0.0.0/16"] # cidr of 10.0.0.0/16
@@ -71,7 +71,7 @@ resource "azurerm_public_ip" "example" {
 
 # create network interface
 resource "azurerm_network_interface" "example" {
-  name                = "windowshomelab-nic"
+  name                = var.niname
   location            = azurerm_resource_group.homelabrg.location
   resource_group_name = azurerm_resource_group.homelabrg.name
 
@@ -85,10 +85,10 @@ resource "azurerm_network_interface" "example" {
 }
 
 data "azurerm_subnet" "example" {
-  name                 = "subnet1"
+  name = var.snname
   #virtual_network_name = "homelab-net"
   virtual_network_name = azurerm_virtual_network.homelabvnet.name
-  resource_group_name = "homelab"
+  resource_group_name  = azurerm_resource_group.homelabrg.name
   #resource_group_name  = azurerm_virtual_network.homelabvnet.name # hard coding this broke it for some reason
 }
 
@@ -98,7 +98,7 @@ output "subnet_id" {
 
 # create windows vm
 resource "azurerm_windows_virtual_machine" "example" {
-  name                = "chris-winvm"
+  name                = var.vmname
   resource_group_name = azurerm_resource_group.homelabrg.name
   location            = azurerm_resource_group.homelabrg.location
   size                = "Standard_F2"
