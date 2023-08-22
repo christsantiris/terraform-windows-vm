@@ -1,0 +1,5 @@
+rgname     = "chrislab"
+rglocation = "East US"
+sgname     = "chrislab-security-group"
+vnname     = "chrislab-net"
+niname     = "windowschrislab-nic"
